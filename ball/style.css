@@ -1,0 +1,42 @@
+html, body {
+    margin: 20;
+    padding:5;
+    background-color:aliceblue;
+  }
+  canvas {
+    display: block;
+  }
+  h1 {
+    color:purple;
+    background-color: yellow;
+  }
+  .title{
+    font-size: 40px;
+    font-family: sans-serif;
+  }
+  #ball {
+    font-size: 20px;
+    font-family: "Arial";
+    color:lightcoral
+    }
+  #bouncing {
+    font-size: 20px;
+    font-family: "Georgia";
+    color:lightskyblue
+  }
+  /*unvisited link*/
+  a:link {
+    color: red
+  }
+  /*visited link*/
+  a:visited{
+    color:green
+  }
+  /*mouse over link*/
+  a:hover {
+    color:pink
+  }
+  /*selected link*/
+  a:active {
+    color:blue
+  }
