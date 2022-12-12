@@ -16,26 +16,27 @@ let pbrushType = "CIRCLE";
 let isPlaying = true;
 let isMenuHide = false;
 function setup() {
+  let canvas = createCanvas(800, 800);
+  canvas.parent("canvasContainer");
   frameRate(FPS);
-  createCanvas(800, 800);
   noCursor();
   strokeCap(PROJECT);
   //Color Buttons
-  buttons.push(new ColorButton(5 + 30 * 0, 5, 30, 30, 200, 50, 50));
-  buttons.push(new ColorButton(5 + 30 * 1, 5, 30, 30, 200, 100, 50));
-  buttons.push(new ColorButton(5 + 30 * 2, 5, 30, 30, 200, 150, 50));
+  buttons.push(new ColorButton(5 + 30 * 3, 5, 30, 30, 200, 50, 50));
+  buttons.push(new ColorButton(5 + 30 * 4, 5, 30, 30, 200, 100, 50));
+  buttons.push(new ColorButton(5 + 30 * 5, 5, 30, 30, 200, 150, 50));
 
-  buttons.push(new ColorButton(5 + 30 * 3, 5, 30, 30, 150, 200, 50));
-  buttons.push(new ColorButton(5 + 30 * 4, 5, 30, 30, 100, 200, 50));
-  buttons.push(new ColorButton(5 + 30 * 5, 5, 30, 30, 50, 200, 50));
+  buttons.push(new ColorButton(5 + 30 * 6, 5, 30, 30, 150, 200, 50));
+  buttons.push(new ColorButton(5 + 30 * 7, 5, 30, 30, 100, 200, 50));
+  buttons.push(new ColorButton(5 + 30 * 8, 5, 30, 30, 50, 200, 50));
 
-  buttons.push(new ColorButton(5 + 30 * 6, 5, 30, 30, 50, 150, 200));
-  buttons.push(new ColorButton(5 + 30 * 7, 5, 30, 30, 50, 100, 200));
-  buttons.push(new ColorButton(5 + 30 * 8, 5, 30, 30, 50, 50, 200));
+  buttons.push(new ColorButton(5 + 30 * 9, 5, 30, 30, 50, 150, 200));
+  buttons.push(new ColorButton(5 + 30 * 10, 5, 30, 30, 50, 100, 200));
+  buttons.push(new ColorButton(5 + 30 * 11, 5, 30, 30, 50, 50, 200));
 
-  buttons.push(new ColorButton(5 + 30 * 9, 5, 30, 30, 100, 50, 200));
-  buttons.push(new ColorButton(5 + 30 * 10, 5, 30, 30, 150, 50, 200));
-  buttons.push(new ColorButton(5 + 30 * 11, 5, 30, 30, 200, 50, 200));
+  buttons.push(new ColorButton(5 + 30 * 12, 5, 30, 30, 100, 50, 200));
+  buttons.push(new ColorButton(5 + 30 * 13, 5, 30, 30, 150, 50, 200));
+  buttons.push(new ColorButton(5 + 30 * 14, 5, 30, 30, 200, 50, 200));
 
   //Function Buttons
   buttons.push(new FunctionButton(5, 5 + 30 * 4, 30, 30, "sun"));
@@ -56,12 +57,12 @@ function draw() {
   background(bR, bG, bB);
   timepast += 1 / FPS;
   if (mouseIsPressed && ((mouseX > 40 && mouseY > 40) || isMenuHide)) {
-    if (brushType == "CIRCLE" || brushType == "TRIANGLE") {
+    if (brushType == "CIRCLE" || brushType == "TRIANGLE" || brushType == "SQUARE") {
       let position = createVector(mouseX, mouseY);
       objs.push(new Bubble(position,sqrt(sq(mouseX - pmouseX) + sq(mouseY - pmouseY)),R,G,B));
     } else if (brushType == "PAINT") {
       paints.push(new Paint((mouseX, mouseY), R, G, B));
-    } else if (brushType == "ERASER" && objs.length > 0) {
+    } else if (brushType == "ERASER") {
       for (let i = 0; i < objs.length; i++) {
       if (sqrt(sq(objs[i].position.x  -mouseX)+sq(objs[i].position.y - mouseY)) <= eraserRange) {
       objs.splice(i, 1);
@@ -79,7 +80,7 @@ function draw() {
           break;
         }
       }
-    } else if (brushType == "TIMER" && objs.length > 0) {
+    } else if (brushType == "TIMER" ) {
       for (let i = 0; i < objs.length; i++) {
         if (
           sqrt(
@@ -125,6 +126,8 @@ function draw() {
         mouseX,
         mouseY - 5
       );
+    }else if(brushType == "SQUARE"){
+      rect(mouseX,mouseY,10,10)
     } else if (brushType == "PAINT") {
       ellipse(mouseX, mouseY, 10, 8);
     } else if (brushType == "ERASER") {
@@ -215,6 +218,7 @@ FunctionButton.prototype.clickButton = function () {
   } else if (this.cmd == "clear") {
     objs = [];
     paints = [];
+    particles = []
   } else if (this.cmd == "save") {
     saveCanvas("Painting", "png");
   } else if (this.cmd == "circle") {
@@ -222,13 +226,17 @@ FunctionButton.prototype.clickButton = function () {
     pbrushType = "CIRCLE";
     this.cmd = "triangle";
   } else if (this.cmd == "triangle") {
-    brushType = "CIRCLE";
+    brushType = "SQUARE";
     pbrushType = "TRIANGLE";
-    this.cmd = "circle";
+    this.cmd = "square";
+  } else if (this.cmd == "square"){
+    brushType = "CIRCLE"
+    pbrushType = "SQUARE"
+    this.cmd = "circle"
   } else if (this.cmd == "paint") {
     brushType = "PAINT";
   }
-};
+}
 FunctionButton.prototype.displayButton = function () {
   push();
   stroke(0);
@@ -303,18 +311,28 @@ FunctionButton.prototype.displayButton = function () {
     text("S", 0, 8);
     resetMatrix();
   } else if (this.cmd == "circle") {
-    fill(0);
+    noFill()
+    stroke(0)
     translate(this.x + this.w / 2, this.y + this.h / 2);
     ellipse(6, -2, 10, 10);
     ellipse(-5, -5, 5, 5);
     ellipse(3, 8, 4, 4);
     resetMatrix();
   } else if (this.cmd == "triangle") {
-    fill(0);
+    noFill()
+    stroke(0)
     translate(this.x + this.w / 2, this.y + this.h / 2);
     triangle(0, 0, 10, 0, 5, -8);
     triangle(-5, 8, 5, 8, 0, 0);
     triangle(-8, -5, -3, -5, -5.5, -9);
+    resetMatrix();
+  } else if (this.cmd == "square") {
+    noFill()
+    stroke(0)
+    translate(this.x + this.w / 2, this.y + this.h / 2);
+    rect(1, -7, 10, 10);
+    rect(-7, -8, 5, 5);
+    rect(-2, 6, 4, 4);
     resetMatrix();
   } else if (this.cmd == "paint") {
     fill(0);
@@ -322,7 +340,7 @@ FunctionButton.prototype.displayButton = function () {
     ellipse(0, 0, 10, 8);
     resetMatrix();
   }
-};
+}
 function ColorButton(x, y, w, h, givenR, givenG, givenB) {
   this.x = x;
   this.y = y;
@@ -454,7 +472,15 @@ Bubble.prototype.drawing = function () {
       cos(this.timepast) * this.baseSize.y + this.size.y * 0.9 * 0.5
     );
     resetMatrix();
-  }
+  }else if (this.shapeType == "SQUARE"){
+    translate(this.position.x, this.position.y);
+    rotate(this.rotateAngle);
+    fill(this.size.x * this.R / 10, this.size.x * this.G / 10, this.size.x * this.B / 10, round(sin(this.timepast) * 128));
+    rect(sin(this.timepast) * this.baseSize.x, cos(this.timepast) * this.baseSize.y, this.size.x * 1.25, this.size.y * 1.25);
+    fill(this.size.x * this.R / 10, this.size.x * this.G / 10, this.size.x * this.B / 10, 255);
+    rect(sin(this.timepast) * this.baseSize.x, cos(this.timepast) * this.baseSize.y, this.size.x, this.size.y);
+    resetMatrix();
+    }
 };
 class Paint {
   constructor(position, givenR, givenG, givenB) {
